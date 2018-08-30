@@ -19,7 +19,7 @@ The goals / steps of this project are the following:
 [image3]: ./report_material/left_2018_08_23_09_15_54_068.jpg "Left camera"
 [image4]: ./report_material/right_2018_08_23_09_15_54_068.jpg "Right camera"
 [image5]: ./report_material/center_flipped_2018_08_23_09_15_54_068.jpg "Midroad driving flipped"
-[image6]: ./examples/placeholder_small.png "Normal Image"
+[image6]: ./report_material/center_crop_2018_08_23_09_15_54_068.jpg "Midroad driving cropped"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
 ## Rubric Points
@@ -115,13 +115,22 @@ To augment the data sat, I also flipped images and angles to generate more train
 
 ![alt text][image5]
 
+Before feeding the images into CNN I cropped the upper and lower part of the image to remove the noninformative part of the image so the model doesn't get confusing information. An example based on the previously shown center image can be seen in the following picture:
+
 ![alt text][image6]
-![alt text][image7]
+
+For training the network I didn't use generator as I tried it out at some point and it seemed to be much slower than loading all the images at one go and there didn't seem to be any problems with this approach so I ditched the generator approach.
+
+
+files to add and remove
+
 Etc ....
 
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+After the collection process, I had 36 504 number of data points. I then preprocessed this data by diving the RGB values by 255 to normalize it and then subtracted 0.5 to mean center the data and make it better for the network to train on.
 
+I finally randomly shuffled the data set and put 20% of the data into a validation set, which mean that 7301 samples were used for validation. 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 2 as after that the training MSE kept decreasing but the validation set MSE started to rise which indicated overfitting and it is evidenced by this graph:
+![alt text][image7]
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I used an adam optimizer so that manually training the learning rate wasn't necessary.

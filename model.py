@@ -1,71 +1,10 @@
 import csv
 import cv2
-import sklearn
 import numpy as np
-from random import shuffle
 from keras.models import Model
 import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
 
-
-def generator(samples, batch_size=32):
-    correction = 0.2 # Parameter to tune the right/left image correction
-    num_samples = len(samples)
-    while 1: # Loop forever so the generator never terminates
-        shuffle(samples)
-        for offset in range(0, num_samples, batch_size):
-            batch_samples = samples[offset:offset+batch_size]
-
-            images = []
-            angles = []
-            for batch_sample in batch_samples:         
-                 # Create the steering angles
-                steering_center = float(line[3])
-                steering_left = steering_center + correction
-                steering_right = steering_center - correction
-                    
-                # Create the images
-                source_path_center  = line[0]
-                source_path_left    = line[1]
-                source_path_right   = line[2]
-                
-                image_center    = cv2.imread(source_path_center)
-                
-                #image_left      = cv2.imread(source_path_left[1:])
-                image_left      = cv2.imread(source_path_left)
-                
-                #image_right     = cv2.imread(source_path_right[1:])
-                image_right     = cv2.imread(source_path_right)
-                
-                # Append the arrays
-                angles.append(steering_center)    
-                images.append(image_center)
-                angles.append(steering_left)    
-                images.append(image_left)
-                angles.append(steering_right)    
-                images.append(image_right) 
-                
-                
-            # Augment the data by flipping it along y axis and inverting the steering angle
-            # to double the training data and make it more symmetrical in regards steering
-            # to the left or right
-                
-            augmented_images, augmented_angles = [], []
-
-            for image, angle in zip(images, angles):
-                augmented_images.append(image)
-                augmented_angles.append(angle)
-                augmented_images.append(cv2.flip(image, 1))
-                augmented_angles.append(angle * -1.0)
-            
-            
-            # trim image to only see section with road
-            X_train = np.array(augmented_images)
-            y_train = np.array(augmented_angles)
-            yield sklearn.utils.shuffle(X_train, y_train)
-
-
-# Load the csv data as lines
+# Load the csv data as lines which reprsesent each frame
 lines = []
 
 # Run 1: CCW, mouse, 1 lap
@@ -80,27 +19,74 @@ with open('driving_data/Run_2/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
-"""        
+        
 # Run 5: CCW, mouse, 1 lap
 with open('driving_data/Run_5/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
         lines.append(line)
-"""
-
-"""       
-with open('driving_data/Run_3/driving_log.csv') as csvfile:
+        
+# Run 6: CCW, mouse, only last righthand corner
+with open('driving_data/Run_6/driving_log.csv') as csvfile:
     reader = csv.reader(csvfile)
     for line in reader:
-        lines.append(line)        
-"""
-#Split the data into test and validation sets
-train_samples, validation_samples = train_test_split(lines, test_size=0.2)
-    
-train_generator = generator(train_samples, batch_size=1024)
-validation_generator = generator(validation_samples, batch_size=1024)
+        lines.append(line)
 
+# Run 7: CCW, mouse, only last righthand corner
+with open('driving_data/Run_7/driving_log.csv') as csvfile:
+    reader = csv.reader(csvfile)
+    for line in reader:
+        lines.append(line)
+
+
+images = []
+measurements = []
+correction = 0.3 # Parameter to tune the right/left image correction
+
+# Load the images and steering angles
+print("Loading images and steering information ...")
+for line in lines:
+    
+    # Load midcamera and create sidecamera steering measurements
+    steering_center = float(line[3])
+    steering_left = steering_center + correction
+    steering_right = steering_center - correction
+        
+    # Load the images paths
+    source_path_center  = line[0]
+    source_path_left    = line[1]
+    source_path_right   = line[2]
+    
+    # Load the images
+    image_center    = cv2.imread(source_path_center)    
+    image_left      = cv2.imread(source_path_left)    
+    image_right     = cv2.imread(source_path_right)
+    
+    # Append the measurements and images to the arrays
+    measurements.append(steering_center)    
+    images.append(image_center)
+    measurements.append(steering_left)    
+    images.append(image_left)
+    measurements.append(steering_right)    
+    images.append(image_right)
+   
+    
+# Augment the data by flipping it along y axis and inverting the steering angle
+# to double the training data and make it more symmetrical in regards steering
+# to the left or right
+    
+print("Augmenting data ...")    
+augmented_images, augmented_measurements = [], []
+
+for image, measurement in zip(images, measurements):
+    augmented_images.append(image)
+    augmented_measurements.append(measurement)
+    augmented_images.append(cv2.flip(image, 1))
+    augmented_measurements.append(measurement * -1.0)
  
+# Create training set
+X_train = np.array(augmented_images)
+y_train = np.array(augmented_measurements)
     
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Cropping2D
@@ -115,6 +101,7 @@ model = Sequential()
 # Normalize and mean center the image so the data isn't from 0 - 255 but
 # from -0.5 to 0.5
 model.add(Lambda (lambda x: x / 255.0 - 0.5, input_shape=(160,320,3)))
+
 # Crop the lower and the upper part of the image to not confuse the model
 # with unimportant data. 65 px are cut from upper part of the picture and
 # 25 px are cut from the bottom of the picture and 0 is cut from left/right
@@ -142,9 +129,10 @@ model.add(Convolution2D(64,3,3, activation="relu"))
 model.add(Convolution2D(64,3,3, activation="relu"))
 model.add(Flatten())
 model.add(Dense(100))
+# The dropout didn't yield much improvement
+model.add(Dropout(0.3))
 model.add(Dense(50))
 model.add(Dense(10))
-#model.add(Dropout(0.5))
 model.add(Dense(1))
 
 # Model uses Mean Square Error as this is not classification problem but 
@@ -154,11 +142,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # Shuffle the data and separate 20 % for validation
-history_object = model.fit_generator(train_generator, 
-                                     samples_per_epoch = len(train_samples), 
-                                     validation_data=validation_generator, 
-                                     nb_val_samples=len(validation_samples), 
-                                     nb_epoch = 2)
+history_object = model.fit(X_train, y_train, validation_split=0.2, shuffle = True, nb_epoch = 4)
 
 # Print the keys contained in the history object
 print(history_object.history.keys())
@@ -173,4 +157,5 @@ plt.xlabel('epoch')
 plt.legend(['training set', 'validation set'], loc='upper right')
 plt.show()
 
+#Save the trained model
 model.save('model.h5')
