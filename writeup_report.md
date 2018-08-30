@@ -15,7 +15,7 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./report_material/cnn-architecture-624x890.png "NVIDIA Autonomous vehicle team's CNN architecture"
-[image2]: ./examples/placeholder.png "Grayscaling"
+[image2]: ./report_material/center_2018_08_23_09_15_54_068.jpg "Midroad driving"
 [image3]: ./examples/placeholder_small.png "Recovery Image"
 [image4]: ./examples/placeholder_small.png "Recovery Image"
 [image5]: ./examples/placeholder_small.png "Recovery Image"
@@ -97,8 +97,9 @@ Here is a visualization of the architecture:
 
 #### 3. Creation of the Training Set & Training Process
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
+To gather as good data as possible I did couple of practice laps while steering with the mouse the get the best steering angles. After I was used to it, I recorded one lap of clockwise driving and trained the initial model based on that.
 
+Example of a image recorded from the center of the road:
 ![alt text][image2]
 
 I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
