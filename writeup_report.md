@@ -16,9 +16,9 @@ The goals / steps of this project are the following:
 
 [image1]: ./report_material/cnn-architecture-624x890.png "NVIDIA Autonomous vehicle team's CNN architecture"
 [image2]: ./report_material/center_2018_08_23_09_15_54_068.jpg "Midroad driving"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
+[image3]: ./report_material/left_2018_08_23_09_15_54_068.jpg "Left camera"
+[image4]: ./report_material/right_2018_08_23_09_15_54_068.jpg "Right camera"
+[image5]: ./report_material/center_flipped_2018_08_23_09_15_54_068.jpg "Midroad driving flipped"
 [image6]: ./examples/placeholder_small.png "Normal Image"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
@@ -100,21 +100,23 @@ Here is a visualization of the architecture:
 To gather as good data as possible I did couple of practice laps while steering with the mouse the get the best steering angles. After I was used to it, I recorded one lap of clockwise driving and trained the initial model based on that.
 
 Example of a image recorded from the center of the road:
+
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then used images from the side cameras as well to get more data to train on and added steering angle correction to both images with opposite sign:
 
 ![alt text][image3]
 ![alt text][image4]
+
+
+Then I recorded 2 laps of CW driving on the track and one additional CCW driving lap.
+
+To augment the data sat, I also flipped images and angles to generate more training data and also balance the dataset so there would be equal amount of data for left and right hand corners. For example, here is an previously shown midroad driving image that has then been flipped:
+
 ![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
 
 ![alt text][image6]
 ![alt text][image7]
-
 Etc ....
 
 After the collection process, I had X number of data points. I then preprocessed this data by ...
