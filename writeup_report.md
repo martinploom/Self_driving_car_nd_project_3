@@ -121,11 +121,6 @@ Before feeding the images into CNN I cropped the upper and lower part of the ima
 
 For training the network I didn't use generator as I tried it out at some point and it seemed to be much slower than loading all the images at one go and there didn't seem to be any problems with this approach so I ditched the generator approach.
 
-
-files to add and remove
-
-Etc ....
-
 After the collection process, I had 36 504 number of data points. I then preprocessed this data by diving the RGB values by 255 to normalize it and then subtracted 0.5 to mean center the data and make it better for the network to train on.
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set, which mean that 7301 samples were used for validation. 
@@ -134,3 +129,11 @@ I used this training data for training the model. The validation set helped dete
 ![alt text][image7]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
+
+
+files to add and remove
+model.h5
+model.py
+
+
+Etc ....

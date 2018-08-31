@@ -130,7 +130,7 @@ model.add(Convolution2D(64,3,3, activation="relu"))
 model.add(Flatten())
 model.add(Dense(100))
 # The dropout didn't yield much improvement
-model.add(Dropout(0.3))
+#model.add(Dropout(0.5))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
@@ -142,7 +142,7 @@ model.add(Dense(1))
 model.compile(loss='mse', optimizer='adam')
 
 # Shuffle the data and separate 20 % for validation
-history_object = model.fit(X_train, y_train, validation_split=0.2, shuffle = True, nb_epoch = 4)
+history_object = model.fit(X_train, y_train, validation_split=0.2, shuffle = True, nb_epoch = 1)
 
 # Print the keys contained in the history object
 print(history_object.history.keys())
