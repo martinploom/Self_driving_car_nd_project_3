@@ -126,14 +126,7 @@ After the collection process, I had 36 504 number of data points. I then preproc
 I finally randomly shuffled the data set and put 20% of the data into a validation set, which mean that 7301 samples were used for validation. 
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 1 as after that the training MSE kept decreasing but the validation set MSE started to rise which indicated overfitting and it is evidenced by this graph:
+
 ![alt text][image7]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
-
-
-files to add and remove
-model.h5
-model.py
-
-
-Etc ....
