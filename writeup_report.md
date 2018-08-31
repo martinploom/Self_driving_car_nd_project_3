@@ -20,7 +20,7 @@ The goals / steps of this project are the following:
 [image4]: ./report_material/right_2018_08_23_09_15_54_068.jpg "Right camera"
 [image5]: ./report_material/center_flipped_2018_08_23_09_15_54_068.jpg "Midroad driving flipped"
 [image6]: ./report_material/center_crop_2018_08_23_09_15_54_068.jpg "Midroad driving cropped"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image7]: ./report_material/2_epochs_0,2steering.png "Validation vs training MSE"
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -125,7 +125,7 @@ After the collection process, I had 36 504 number of data points. I then preproc
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set, which mean that 7301 samples were used for validation. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 2 as after that the training MSE kept decreasing but the validation set MSE started to rise which indicated overfitting and it is evidenced by this graph:
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was 1 as after that the training MSE kept decreasing but the validation set MSE started to rise which indicated overfitting and it is evidenced by this graph:
 ![alt text][image7]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
